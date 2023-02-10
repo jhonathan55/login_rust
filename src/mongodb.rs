@@ -1,4 +1,4 @@
-use crate::structs::UserRequest;
+
 use futures::StreamExt;
 use mongodb::{
     bson::doc,
@@ -6,7 +6,9 @@ use mongodb::{
     options::{ClientOptions, IndexOptions},
     Client, Collection, IndexModel,
 };
-pub async fn mongodb_init() -> Result<Collection<UserRequest>, Error> {
+
+use crate::structs::structs::User;
+pub async fn mongodb_init() -> Result<Collection<User>, Error> {
     /// Esta función se encarga de crear la colección y el índice en la base de datos.
     /// Si la colección ya existe, no se crea.
     /// Si el índice ya existe, no se crea.
@@ -28,7 +30,7 @@ pub async fn mongodb_init() -> Result<Collection<UserRequest>, Error> {
             }
         };
     }
-    let collection = db.collection::<UserRequest>("users");
+    let collection = db.collection::<User>("users");
     let index_names = collection.list_indexes(None).await?;
     let mut index_exists = false;
     index_names

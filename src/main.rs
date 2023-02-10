@@ -1,8 +1,10 @@
 pub mod mongodb;
 pub mod structs;
-use crate::structs::{RequestById, UserRequest};
-use ::mongodb::{bson::doc, Collection};
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+
+use actix_web::{get, post, web::{self, Data}, App, HttpResponse, HttpServer, Responder};
+use ::mongodb::{Collection, bson::doc};
+
+use crate::structs::{structs::User, requests::request_user::RequestById};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -23,8 +25,8 @@ async fn main() -> std::io::Result<()> {
 
 #[post("/register")]
 async fn register_handler(
-    json: web::Json<UserRequest>,
-    collection: web::Data<Collection<UserRequest>>,
+    json: web::Json<User>,
+    collection: web::Data<Collection<User>>,
 ) -> impl Responder {
     println!("{:?}", json);
     // let body=insert_one(&collection, json.into_inner()).await.unwrap();
@@ -41,7 +43,7 @@ async fn register_handler(
 #[get("/getById")]
 async fn get_by_id_handler(
     json: web::Query<RequestById>,
-    collection: web::Data<Collection<UserRequest>>,
+    collection: web::Data<Collection<User>>,
 ) -> impl Responder {
     println!("{:?}", json);
     let id = doc! {"_id": json.id};
